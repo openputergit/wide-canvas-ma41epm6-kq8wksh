@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RealEstate Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .property-card:hover { transform: translateY(-5px); }
+        .custom-shadow { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <h1 class="text-2xl font-bold text-blue-600">RealEstate Hub</h1>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Post Property</button>
+                    <button class="text-gray-600 hover:text-blue-600">Login</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Search Section -->
+    <div class="bg-blue-600 py-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="bg-white rounded-lg p-6 shadow-xl">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <select class="border p-2 rounded" id="propertyType">
+                        <option>Property Type</option>
+                        <option>Apartment</option>
+                        <option>House</option>
+                        <option>Villa</option>
+                    </select>
+                    <select class="border p-2 rounded" id="location">
+                        <option>Location</option>
+                        <option>New York</option>
+                        <option>Los Angeles</option>
+                        <option>Chicago</option>
+                    </select>
+                    <select class="border p-2 rounded" id="budget">
+                        <option>Budget</option>
+                        <option>$0 - $100,000</option>
+                        <option>$100,000 - $500,000</option>
+                        <option>$500,000+</option>
+                    </select>
+                    <button class="bg-blue-600 text-white p-2 rounded hover:bg-blue-700" onclick="searchProperties()">
+                        Search Properties
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Property Listings -->
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="propertyList">
+            <!-- Property cards will be dynamically added here -->
+        </div>
+    </div>
+
+    <script>
+        // Simulated database
+        const properties = [
+            {
+                id: 1,
+                type: 'Apartment',
+                location: 'New York',
+                price: 250000,
+                image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=500&auto=format',
+                beds: 2,
+                baths: 2,
+                area: 1200
+            },
+            {
+                id: 2,
+                type: 'House',
+                location: 'Los Angeles',
+                price: 750000,
+                image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=500&auto=format',
+                beds: 4,
+                baths: 3,
+                area: 2500
+            },
+            {
+                id: 3,
+                type: 'Villa',
+                location: 'Chicago',
+                price: 1200000,
+                image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=500&auto=format',
+                beds: 5,
+                baths: 4,
+                area: 3500
+            }
+        ];
+
+        // Initial render
+        renderProperties(properties);
+
+        function renderProperties(props) {
+            const propertyList = document.getElementById('propertyList');
+            propertyList.innerHTML = '';
+            
+            props.forEach(property => {
+                const card = `
+                    <div class="bg-white rounded-lg shadow-lg p-4 property-card transition-transform duration-300">
+                        <img src="${property.image}" class="w-full h-48 object-cover rounded-lg mb-4" alt="Property">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">${property.type}</h3>
+                            <span class="text-blue-600 font-bold">$${property.price.toLocaleString()}</span>
+                        </div>
+                        <p class="text-gray-600 mb-2"><i class="bi bi-geo-alt"></i> ${property.location}</p>
+                        <div class="flex justify-between text-gray-500">
+                            <span><i class="bi bi-door-open"></i> ${property.beds} Beds</span>
+                            <span><i class="bi bi-droplet"></i> ${property.baths} Baths</span>
+                            <span><i class="bi bi-square"></i> ${property.area} sq ft</span>
+                        </div>
+                        <button class="w-full mt-4 bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+                            View Details
+                        </button>
+                    </div>
+                `;
+                propertyList.innerHTML += card;
+            });
+        }
+
+        function searchProperties() {
+            const type = document.getElementById('propertyType').value;
+            const location = document.getElementById('location').value;
+            const budget = document.getElementById('budget').value;
+
+            // Filter properties based on selection
+            let filtered = properties;
+            if (type !== 'Property Type') {
+                filtered = filtered.filter(p => p.type === type);
+            }
+            if (location !== 'Location') {
+                filtered = filtered.filter(p => p.location === location);
+            }
+            if (budget !== 'Budget') {
+                const [min, max] = budget.split(' - ').map(p => parseInt(p.replace(/[\$,\+]/g, '')));
+                filtered = filtered.filter(p => {
+                    if (max) {
+                        return p.price >= min && p.price <= max;
+                    }
+                    return p.price >= min;
+                });
+            }
+
+            renderProperties(filtered);
+        }
+    </script>
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>
